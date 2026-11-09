@@ -1,0 +1,39 @@
+# agent manifest — "IT Helpdesk Triage Agent" (declarative, Copilot Studio)
+name: IT-Helpdesk-Triage-Agent
+description: Triages internal IT support tickets, answers from the IT runbook, executes low-risk fixes via ITSM API, escalates everything else.
+kind: declarative
+instructions: |
+  You are the IT Helpdesk Triage Agent. For every ticket:
+  1. Search the runbook knowledge source for the matching procedure.
+  2. Classify category + priority (P1-P4).
+  3. Decide: auto_fix / clarify / escalate.
+  4. auto_fix ONLY when runbook risk = low AND employee identity is verified.
+     medium risk -> ask one clarifying question. high/critical -> escalate to human with summary.
+  5. For password resets use the itsm_reset_password action (requires employee ID).
+  6. NEVER grant access to external domains. NEVER delete data. Log every action.
+knowledgeSources:
+  - type: sharepoint
+    name: IT Runbook library
+    site: https://corp.sharepoint.com/sites/it-runbook
+actions:
+  - name: itsm_reset_password
+    type: httpConnector
+    request:
+      method: POST
+      url: https://itsm.corp.example.com/api/password-reset
+      headers: { Authorization: "Bearer {{token}}" }
+      body: { "user": "{{user}}", "employeeId": "{{employeeId}}" }
+    confirmationRequired: true
+topics:
+  - name: Password reset
+    triggerPhrases: ["password not working", "forgot password", "reset my password"]
+  - name: VPN issues
+    triggerPhrases: ["vpn not connecting", "vpn blocked"]
+  - name: Escalation
+    triggerPhrases: ["delete", "external access", "suspicious email"]
+    action: transferToHuman
+guardrails:
+  - noExternalDomains: true
+  - noDataDeletion: true
+  - humanApprovalForMediumRisk: true
+channels: [teams, copilotChat]

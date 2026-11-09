@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\eval.py", line 37, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\eval.py", line 14, in main
+    kb = KBIndex()
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\agent.py", line 39, in __init__
+    self.rows = [(t, embed(t + " " + d), d, r) for t, d, r in KB]
+                     ~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\agent.py", line 18, in embed
+    return ollama("/api/embeddings", {"model": EMBED, "prompt": text})["embedding"]
+           ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\agent.py", line 13, in ollama
+    req = urllib.request.Request(f"{OLLAMA}{path}", data=json.dumps(payload).encode(),
+                                 headers={"Content-Type": "application/json"})
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 292, in __init__
+    self.full_url = url
+    ^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 318, in full_url
+    self._parse()
+    ~~~~~~~~~~~^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 347, in _parse
+    raise ValueError("unknown url type: %r" % self.full_url)
+ValueError: unknown url type: '0.0.0.0/api/embeddings'
+EVAL_DONE rc=1
