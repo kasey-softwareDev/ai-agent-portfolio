@@ -1,53 +1,35 @@
-t01: exp=password reset/auto_fix got=account_management/auto_fix
-t02: exp=vpn/auto_fix got=network/auto_fix
-t03: exp=outlook/clarify got=application/auto_fix
-t04: exp=intune compliance/auto_fix got=Intune Device Compliance/clarify
-t05: exp=mailbox permission/auto_fix got=mailbox/auto_fix
-t06: exp=mailbox permission/escalate got=user_account/escalate
-t07: exp=data deletion/escalate got=Data Management/escalate
-t08: exp=printer/auto_fix got=printer/auto_fix
-t09: exp=software install/clarify got=software/clarify
-t10: exp=account lockout/auto_fix got=Account Management/auto_fix
-t11: exp=hardware/escalate got=hardware/clarify
-t12: exp=shared drive access/clarify got=unknown/escalate
-t13: exp=password reset/auto_fix got=User Account Management/auto_fix
+Traceback (most recent call last):
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\eval.py", line 37, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\eval.py", lit06: exp=mailbox permission/escalate got=security/escalate
+t07: exp=data deletion/escalate got=data management/escalate
 Traceback (most recent call last):
   File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\eval.py", line 37, in <module>
     main()
     ~~~~^^
   File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\eval.py", line 17, in main
     got = triage(t["text"], kb)
-  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\agent.py", line 97, in triage
-    r = ollama("/api/chat", {"model": MODEL, "messages": messages, "tools": TOOLS})
-  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\agent.py", line 17, in ollama
-    return json.loads(urllib.request.urlopen(req, timeout=120).read())
-                      ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 189, in urlopen
-    return opener.open(url, data, timeout)
-           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 489, in open
-    response = self._open(req, data)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 506, in _open
-    result = self._call_chain(self.handle_open, protocol, protocol +
-                              '_open', req)
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\agent.py", line 115, in triage
+    {"role": "system", "content": "You are an IT ticket-triage agent. Use kb_search first. Then call ITSM tools ONLY if the KB risk level is 'low' and identity is verified; 'medium' needs a clarify step; 'high'/'critical' must escalate. Always finish with the decide tool."},
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\OneDrive\Desktop\earn-kit\jobs\portfolio\ticket-triage-agent\agent.py", line 82, in run_tool
+    "category": {"type": "string"}, "priority": {"type": "string", "enum": ["P1", "P2", "P3", "P4"]},
+                                                               ^^^^^^^^^^^^
+KeyError: 'user'
+^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 495, in open
+    response = meth(req, response)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 604, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 533, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 466, in _call_chain
     result = func(*args)
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 1348, in http_open
-    return self.do_open(http.client.HTTPConnection, req)
-           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 1323, in do_open
-    r = h.getresponse()
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 1459, in getresponse
-    response.begin()
-    ~~~~~~~~~~~~~~^^
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 336, in begin
-    version, status, reason = self._read_status()
-                              ~~~~~~~~~~~~~~~~~^^
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\http\client.py", line 297, in _read_status
-    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
-               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
-  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\socket.py", line 723, in readinto
-    return self._sock.recv_into(b)
-           ~~~~~~~~~~~~~~~~~~~~^^^
-TimeoutError: timed out
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\urllib\request.py", line 613, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+EVAL_DONE rc=1
 EVAL_DONE rc=1

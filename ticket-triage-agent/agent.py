@@ -5,16 +5,37 @@ Runs locally on Ollama (qwen2.5 + nomic-embed-text). No cloud keys needed."""
 import json, sqlite3, time, math, os, re, urllib.request
 
 OLLAMA = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-MODEL = os.environ.get("AGENT_MODEL", "qwen2.5:latest")
+LLM_BASE = os.environ.get("LLM_BASE", "")   # OpenAI-compatible base, e.g. http://127.0.0.1:8091/v1
+MODEL = os.environ.get("AGENT_MODEL", os.environ.get("LLM_MODEL", "qwen2.5:latest"))
 EMBED = os.environ.get("EMBED_MODEL", "nomic-embed-text:latest")
 DB = os.path.join(os.path.dirname(__file__), "audit.db")
 
-def ollama(path, payload):
+def ollama(path, payload, tries=3):
     payload = dict(payload)
     payload["stream"] = False
-    req = urllib.request.Request(f"{OLLAMA}{path}", data=json.dumps(payload).encode(),
-                                 headers={"Content-Type": "application/json"})
-    return json.loads(urllib.request.urlopen(req, timeout=120).read())
+    last = None
+    for _ in range(tries):
+        try:
+            if LLM_BASE and path == "/api/chat":
+                p = {"model": MODEL, "messages": payload["messages"], "stream": False}
+                if payload.get("tools"): p["tools"] = payload["tools"]
+                req = urllib.request.Request(f"{LLM_BASE}/chat/completions", data=json.dumps(p).encode(),
+                                             headers={"Content-Type": "application/json"})
+                r = json.loads(urllib.request.urlopen(req, timeout=120).read())
+                return {"message": {"role": "assistant", "content": r["choices"][0]["message"].get("content"),
+                                    "tool_calls": [{"function": {"name": c["function"]["name"],
+                                                                "arguments": c["function"]["arguments"]}}
+                                                   for c in (r["choices"][0]["message"].get("tool_calls") or [])]}}
+            if LLM_BASE and path == "/api/embeddings":
+                req = urllib.request.Request(f"{LLM_BASE}/embeddings", data=json.dumps({"model": EMBED, "input": payload["prompt"]}).encode(),
+                                             headers={"Content-Type": "application/json"})
+                return {"embedding": json.loads(urllib.request.urlopen(req, timeout=60).read())["data"][0]["embedding"]}
+            req = urllib.request.Request(f"{OLLAMA}{path}", data=json.dumps(payload).encode(),
+                                         headers={"Content-Type": "application/json"})
+            return json.loads(urllib.request.urlopen(req, timeout=300).read())
+        except Exception as e:
+            last = e
+    raise last
 
 def embed(text):
     return ollama("/api/embeddings", {"model": EMBED, "prompt": text})["embedding"]
