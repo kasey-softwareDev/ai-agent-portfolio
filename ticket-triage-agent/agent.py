@@ -10,6 +10,8 @@ EMBED = os.environ.get("EMBED_MODEL", "nomic-embed-text:latest")
 DB = os.path.join(os.path.dirname(__file__), "audit.db")
 
 def ollama(path, payload):
+    payload = dict(payload)
+    payload["stream"] = False
     req = urllib.request.Request(f"{OLLAMA}{path}", data=json.dumps(payload).encode(),
                                  headers={"Content-Type": "application/json"})
     return json.loads(urllib.request.urlopen(req, timeout=120).read())
